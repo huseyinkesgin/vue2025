@@ -1,0 +1,58 @@
+.input-xs {
+    height: 1.5rem !important; /* h-6 */
+    padding: 0.25rem !important; /* p-1 */
+    font-size: 0.75rem !important; /* text-xs */
+}
+
+.input-s {
+    height: 2rem !important; /* h-8 */
+    padding: 0.5rem !important; /* p-2 */
+    font-size: 0.875rem !important; /* text-sm */
+}
+
+.input-md {
+    height: 2.5rem !important; /* h-10 */
+    padding: 0.75rem !important; /* p-3 */
+    font-size: 1rem !important; /* text-base */
+}
+
+.input-lg {
+    height: 3rem !important; /* h-12 */
+    padding: 1rem !important; /* p-4 */
+    font-size: 1.125rem !important; /* text-lg */
+}
+
+.input-xl {
+    height: 3.5rem !important; /* h-14 */
+    padding: 1.25rem !important; /* p-5 */
+    font-size: 1.25rem !important; /* text-xl */
+}
+
+.select-xs {
+    padding-top: 0.2rem !important; /* Adjust top padding */
+    padding-bottom: 0.2rem !important; /* Adjust bottom padding */
+    line-height: 1.05rem !important; /* Ensure line height matches height */
+    font-size: 0.75rem !important; /* text-xs */
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    background-color: rgb(247, 232, 151) !important;
+    border-color: orange !important;
+    box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.5) !important; /* Adjust ring color */
+    transition: all 0.2s ease-in-out !important; 
+}
+
+.button-kaydet {
+    @apply inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 !important;
+}
+
+.button-iptal {
+    @apply inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 !important;
+}
+
+.button-ekle {
+    @apply inline-flex justify-center rounded-md border border-transparent shadow-sm px-2 py-1 bg-green-500 text-xs font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 !important;
+}
+
+/* Add more sizes as needed */

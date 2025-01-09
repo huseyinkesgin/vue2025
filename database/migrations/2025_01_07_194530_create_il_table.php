@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Il', function (Blueprint $table) {
+        Schema::create('il', function (Blueprint $table) {
             $table->id();
             $table->string('Kod')->unique();
             $table->string('IlAdi', 50)->unique();
-            $table->boolean('Durum')->default(true);
-            $table->string('Aciklama',300)->nullable();
+            $table->string('Durum')->default('Aktif');
+            $table->string('Aciklama', 300)->nullable();
             $table->timestamp('EklenmeTarihi')->useCurrent();
-            $table->timestamp('DuzenlenmeTarihi')->useCurrent()->nullable();
+            $table->timestamp('DuzenlenmeTarihi')->useCurrentOnUpdate()->nullable();
         });
     }
 
