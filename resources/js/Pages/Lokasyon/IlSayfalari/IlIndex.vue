@@ -7,12 +7,12 @@
         </template>
 
         <div class="py-1">
-            <div class="mx-auto">
+            <div class="mx-auto h-[calc(100vh-12rem)]">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-sm flex justify-between items-center p-4">
                     <h1 class="text-sm font-bold mb-4">Il Listesi</h1>
                     <button @click.prevent="openModal" class="button-ekle mb-2">Yeni Il Ekle</button>
                 </div>
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg h-full">
                     <IlTable :iller="iller" :filters="filters" @edit="editIl" />
                 </div>
             </div>

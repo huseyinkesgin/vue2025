@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="flex flex-col h-full">
         <!-- Tablo Üst Kısmı -->
         <div class="flex justify-between items-center mb-4 px-6 py-3 bg-white border-b">
             <!-- Per Page Select -->
@@ -34,54 +34,79 @@
             </div>
         </div>
 
-        <!-- Tablo -->
-        <table class="min-w-full border-collapse">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th scope="col"
-                        class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
-                        Kod</th>
-                    <th scope="col"
-                        class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
-                        Il adi</th>
-                    <th scope="col"
-                        class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
-                        Durum</th>
-                    <th scope="col"
-                        class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
-                        Aciklama</th>
-                    <th scope="col"
-                        class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
-                        Eklenme t.</th>
-                    <th scope="col"
-                        class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
-                        Duzenlenme t.</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(il, index) in iller.data" 
-                    :key="il.id" 
-                    :class="[
-                        index % 2 === 0 ? 'bg-white' : 'bg-blue-50',
-                        'hover:bg-orange-100 cursor-pointer'
-                    ]" 
-                    @click.stop="handleEdit(il)"
-                >
-                    <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.Kod }}</td>
-                    <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.IlAdi }}</td>
-                    <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.Durum }}</td>
-                    <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.Aciklama }}</td>
-                    <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.eklenme_tarihi_format }}</td>
-                    <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.duzenlenme_tarihi_format }}</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <!-- Pagination -->
-        <Pagination 
-            :pagination="iller" 
-            @page-changed="handlePageChange"
+        <!-- Tablo Container -->
+        <div class="flex-1 overflow-x-auto">
+            <table class="min-w-full border-collapse">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            Kod</th>
+                        <th scope="col"
+                            class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            Il adi</th>
+                        <th scope="col"
+                            class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            Durum</th>
+                        <th scope="col"
+                            class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            Aciklama</th>
+                        <th scope="col"
+                            class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            Eklenme t.</th>
+                        <th scope="col"
+                            class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            Duzenlenme t.</th>
+                        <th scope="col" class="px-6 py-2 text-left text-xs font-medium tracking-wider text-[#800000] capitalize border border-gray-300">
+                            İşlemler
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(il, index) in iller.data" 
+                        :key="il.id" 
+                        :class="[
+                            index % 2 === 0 ? 'bg-white' : 'bg-blue-50',
+                            'hover:bg-orange-100'
+                        ]"
+                        @click="handleEdit(il)"
+                        style="cursor: pointer"
+                    >
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.Kod }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.IlAdi }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.Durum }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.Aciklama }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.eklenme_tarihi_format }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">{{ il.duzenlenme_tarihi_format }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap text-xs border border-gray-300">
+                            <button 
+                                @click.stop="confirmDelete(il)" 
+                                class="text-red-600 hover:text-red-800"
+                            >
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Delete Modal -->
+        <DeleteModal 
+            v-if="showDeleteModal"
+            @confirm="handleDelete"
+            @cancel="showDeleteModal = false"
         />
+        
+        <!-- Pagination - Sabit Alt Kısım -->
+        <div class="sticky bottom-0 bg-white border-t shadow-md">
+            <Pagination 
+                :pagination="iller" 
+                @page-changed="handlePageChange"
+            />
+        </div>
     </div>
 </template>
 
@@ -90,6 +115,7 @@ import { ref, watch } from 'vue';
 import Pagination from '@/Components/Pagination.vue';
 import { router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
+import DeleteModal from '@/Components/DeleteModal.vue';
 
 const props = defineProps({
     iller: {
@@ -161,5 +187,40 @@ const handlePageChange = (page) => {
             only: ['iller']
         }
     );
+};
+
+const showDeleteModal = ref(false);
+const selectedIl = ref(null);
+
+const confirmDelete = (il) => {
+    selectedIl.value = il;
+    showDeleteModal.value = true;
+};
+
+const handleDelete = () => {
+    router.delete(route('il.destroy', selectedIl.value.id), {
+        onBefore: () => {
+            showDeleteModal.value = false;
+        },
+        onSuccess: () => {
+            selectedIl.value = null;
+            // Sayfayı yeniden yükle
+            router.get(
+                route('il.index'),
+                { 
+                    search: search.value,
+                    per_page: perPage.value
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    only: ['iller']
+                }
+            );
+        },
+        onError: (error) => {
+            console.error('Silme işlemi başarısız:', error);
+        }
+    });
 };
 </script>

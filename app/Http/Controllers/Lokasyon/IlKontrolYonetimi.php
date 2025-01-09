@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Lokasyon;
 
-use Inertia\Inertia;
+use App\Http\Controllers\Controller;
 use App\Models\Il;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Lokasyon\IlStoreRequest;
-use App\Http\Requests\Lokasyon\IlUpdateRequest;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class IlKontrolYonetimi extends Controller
 {
@@ -17,97 +13,74 @@ class IlKontrolYonetimi extends Controller
     {
         $query = Il::query();
 
-        // Sayfalama
-        $perPage = (int) $request->input('per_page', 20);
-        $perPage = in_array($perPage, [10, 20, 50, 100]) ? $perPage : 20;
-
-        // Arama işlemi
-        if ($request->filled('search')) {
-            $query->search($request->search);
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('Kod', 'like', "%{$search}%")
+                    ->orWhere('IlAdi', 'like', "%{$search}%");
+            });
         }
 
-        // Sıralama
-        $query->orderBy('id', 'desc');
-
-        $iller = $query->paginate($perPage);
+        $iller = $query->paginate($request->get('per_page', 20));
 
         return Inertia::render('Lokasyon/IlSayfalari/IlIndex', [
             'iller' => $iller,
-            'filters' => [
-                'search' => $request->input('search', ''),
-                'per_page' => $perPage
-            ]
+            'filters' => $request->all(['search', 'per_page'])
         ]);
     }
 
-    public function store(IlStoreRequest $request)
+    public function store(Request $request)
     {
-        try {
-            Log::info('Il store request data:', $request->all());
+        $validated = $request->validate([
+            'Kod' => 'required|unique:il,Kod',
+            'IlAdi' => 'required|string|max:255|unique:il,IlAdi',
+            'Durum' => 'required',
+            'Aciklama' => 'nullable|string'
+        ], [
+            'Kod.required' => 'Kod alanı zorunludur.',
+            'Kod.unique' => 'Bu kod zaten kullanılmakta.',
+            'IlAdi.required' => 'İl adı alanı zorunludur.',
+            'IlAdi.unique' => 'Bu il adı zaten kullanılmakta.',
+            'Durum.required' => 'Durum alanı zorunludur.'
+        ]);
 
-            $il = new Il();
-            $il->Kod = $request->input('Kod');
-            $il->IlAdi = $request->input('IlAdi');
-            $il->Durum = $request->input('Durum');
-            $il->Aciklama = $request->input('Aciklama');
-            $il->save();
+        Il::create($validated);
 
-            Log::info('Il created successfully:', $il->toArray());
-            return response()->json($il, 201);
-        } catch (\Exception $e) {
-            Log::error('Il store error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-
-            return response()->json([
-                'error' => 'Kayıt işlemi başarısız',
-                'message' => $e->getMessage(),
-                'details' => config('app.debug') ? $e->getTrace() : []
-            ], 500);
-        }
+        return redirect()->back();
     }
 
-    public function show($id)
+    public function update(Request $request, $id)
     {
-        return Il::find($id);
-    }
+        $validated = $request->validate([
+            'Kod' => 'required|unique:il,Kod,' . $id,
+            'IlAdi' => 'required|string|max:255|unique:il,IlAdi,' . $id,
+            'Durum' => 'required',
+            'Aciklama' => 'nullable|string'
+        ], [
+            'Kod.required' => 'Kod alanı zorunludur.',
+            'Kod.unique' => 'Bu kod zaten kullanılmakta.',
+            'IlAdi.required' => 'İl adı alanı zorunludur.',
+            'IlAdi.unique' => 'Bu il adı zaten kullanılmakta.',
+            'Durum.required' => 'Durum alanı zorunludur.'
+        ]);
 
-    public function update(IlUpdateRequest $request, $id)
-    {
-        try {
-            Log::info('Il update request data:', $request->all());
+        $il = Il::findOrFail($id);
+        $il->update($validated);
 
-            $il = Il::findOrFail($id);
-            $il->update($request->all());
-
-            Log::info('Il updated successfully:', $il->toArray());
-            return response()->json($il, 200);
-        } catch (\Exception $e) {
-            Log::error('Il update error: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-
-            return response()->json([
-                'error' => 'Güncelleme işlemi başarısız',
-                'message' => $e->getMessage(),
-                'details' => config('app.debug') ? $e->getTrace() : []
-            ], 500);
-        }
+        return redirect()->back();
     }
 
     public function destroy($id)
     {
-        Il::destroy($id);
-        return response()->json(null, 204);
+        $il = Il::findOrFail($id);
+        $il->delete();
+
+        return redirect()->back();
     }
 
     public function latestKod()
     {
-        try {
-            $latestIl = Il::orderBy('id', 'desc')->first();
-            $kod = $latestIl ? $latestIl->Kod : 'IL-00000';
-            return response()->json($kod);
-        } catch (\Exception $e) {
-            Log::error('Latest kod error: ' . $e->getMessage());
-            return response()->json('IL-00000');
-        }
+        $latestIl = Il::orderBy('Kod', 'desc')->first();
+        return $latestIl ? $latestIl->Kod : null;
     }
 }
